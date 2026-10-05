@@ -1,0 +1,42 @@
+[
+  {
+    "id": "c1",
+    "name": "Lucas Viral",
+    "handle": "@lucas.viral",
+    "niche": "curiosidades",
+    "followers": 14200,
+    "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80",
+    "availableFor": "Dueto / Costura (Stitch)",
+    "bio": "Explico fatos que ninguém te conta. Buscando criadores para collabs sobre mistérios da ciência."
+  },
+  {
+    "id": "c2",
+    "name": "Mari Finanças",
+    "handle": "@marifinancas",
+    "niche": "negocios",
+    "followers": 28900,
+    "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80",
+    "availableFor": "Lives conjuntas / Feedbacks",
+    "bio": "Renda extra, investimentos para iniciantes e economia prática. Aberta a parcerias de nicho."
+  },
+  {
+    "id": "c3",
+    "name": "Fit Gabriel",
+    "handle": "@fit.gabriel",
+    "niche": "fitness",
+    "followers": 45300,
+    "avatar": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=120&auto=format&fit=crop&q=80",
+    "availableFor": "Desafios em Dueto",
+    "bio": "Treino em casa sem frescura e receitas rápidas. Vamos fazer duetos de desafios fitness!"
+  },
+  {
+    "id": "c4",
+    "name": "Bia Glow Up",
+    "handle": "@biaglow",
+    "niche": "beleza",
+    "followers": 19500,
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80",
+    "availableFor": "Troca de resenhas",
+    "bio": "Skincare coreano e truques de maquiagem acessíveis. Busco parceiros para testes de produtos."
+  }
+]

@@ -1,0 +1,61 @@
+{
+  "peak_hours": {
+    "segunda": [
+      { "time": "06:00 - 08:00", "score": 75, "reason": "Pessoas acordando e indo para o trabalho/escola." },
+      { "time": "12:00 - 14:00", "score": 85, "reason": "Horário de almoço e pausa no trabalho." },
+      { "time": "19:00 - 22:30", "score": 98, "reason": "Pico máximo de lazer noturno e rolagem no feed." }
+    ],
+    "terca": [
+      { "time": "07:00 - 09:00", "score": 78, "reason": "Rotina matinal ativa." },
+      { "time": "12:30 - 13:30", "score": 82, "reason": "Almoço e descanso." },
+      { "time": "18:00 - 22:00", "score": 94, "reason": "Alto fluxo após expediente escolar/comercial." }
+    ],
+    "quarta": [
+      { "time": "09:00 - 11:00", "score": 80, "reason": "Pausa matinal em alta." },
+      { "time": "14:00 - 16:00", "score": 79, "reason": "Pausa da tarde." },
+      { "time": "19:30 - 23:00", "score": 97, "reason": "Grande pico de engajamento no meio da semana." }
+    ],
+    "quinta": [
+      { "time": "08:00 - 10:00", "score": 83, "reason": "Horário de deslocamento e início do dia." },
+      { "time": "13:00 - 15:00", "score": 81, "reason": "Transição de expediente." },
+      { "time": "19:00 - 22:00", "score": 96, "reason": "Preparação para o fim de semana já inicia." }
+    ],
+    "sexta": [
+      { "time": "11:00 - 13:00", "score": 88, "reason": "Almoço de sexta-feira com alto uso de celular." },
+      { "time": "16:00 - 18:00", "score": 92, "reason": "Sextou! Usuários conectados nas redes sociais." },
+      { "time": "20:00 - 01:00", "score": 99, "reason": "Pico prolongado de entretenimento noturno." }
+    ],
+    "sabado": [
+      { "time": "10:00 - 13:00", "score": 90, "reason": "Manhã descontraída de fim de semana." },
+      { "time": "17:00 - 20:00", "score": 93, "reason": "Final de tarde antes de compromissos." },
+      { "time": "21:00 - 02:00", "score": 95, "reason": "Madrugada com forte consumo de vídeos curtos." }
+    ],
+    "domingo": [
+      { "time": "09:00 - 12:00", "score": 86, "reason": "Domingo de manhã tranquilo." },
+      { "time": "15:00 - 18:00", "score": 94, "reason": "Tarde de domingo em casa." },
+      { "time": "19:00 - 23:30", "score": 100, "reason": "O maior pico semanal de retenção e consumo no TikTok." }
+    ]
+  },
+  "viral_pillars": [
+    {
+      "pillar": "Taxa de Conclusão (Watch Time)",
+      "weight": "40%",
+      "description": "Se as pessoas assistirem ao seu vídeo até o final, o TikTok entrega para o dobro de pessoas. Mantenha vídeos com 15 a 45 segundos nos primeiros meses."
+    },
+    {
+      "pillar": "Compartilhamentos & Salvos",
+      "weight": "30%",
+      "description": "Compartilhar e salvar contam muito mais pontos que apenas a curtida. Crie conteúdos que sejam úteis para salvar ou engraçados para mandar no WhatsApp/DM."
+    },
+    {
+      "pillar": "Comentários e Debates",
+      "weight": "20%",
+      "description": "Faça uma pergunta polêmica ou dividida no final para incentivar o público a opinar nos comentários."
+    },
+    {
+      "pillar": "Curtidas (Likes)",
+      "weight": "10%",
+      "description": "Importante como termômetro visual, mas tem o menor peso relativo no algoritmo comparado à retenção total."
+    }
+  ]
+}

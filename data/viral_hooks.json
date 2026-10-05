@@ -1,0 +1,120 @@
+{
+  "curiosidades": {
+    "name": "Curiosidades & Fatos Incríveis",
+    "hooks": [
+      "Quase ninguém sabe disso, mas se você...",
+      "O último fato dessa lista vai explodir sua cabeça...",
+      "3 coisas proibidas que acontecem todos os dias e ninguém te conta:",
+      "Se você acha que sabe tudo sobre isso, assista até o final...",
+      "Pare de rolar agora se você tem menos de 25 anos!",
+      "O segredo que grandes empresas escondem de você a sete chaves..."
+    ],
+    "structures": [
+      {
+        "title": "Revelação Chocante",
+        "intro": "Comece com um fato contra-intuitivo nos primeiros 2 segundos com um zoom rápido.",
+        "body": "Apresente 2 pontos rápidos e misteriosos que prendam a curiosidade.",
+        "climax": "Guarde a informação mais surreal para os últimos 5 segundos do vídeo.",
+        "cta": "Me segue para não perder a parte 2 que sai amanhã às 18h!"
+      }
+    ],
+    "hashtags": ["#curiosidades", "#fatoscuriosos", "#vocesabia", "#aprender", "#foryou", "#viral", "#fatosdesconhecidos"]
+  },
+  "negocios": {
+    "name": "Negócios, Finanças & Marketing",
+    "hooks": [
+      "Se eu perdesse tudo hoje, é exatamente isso que faria para fazer R$ 5.000 em 30 dias:",
+      "O erro financeiro número 1 que 90% dos brasileiros cometem antes dos 30:",
+      "Como essa pessoa fatura 6 dígitos trabalhando apenas 3 horas por dia:",
+      "Pare de gastar dinheiro nisso se você quer ter liberdade em 2026:",
+      "3 ferramentas gratuitas que parecem ilegais de tão boas:"
+    ],
+    "structures": [
+      {
+        "title": "Passo a Passo Prático",
+        "intro": "Diga o resultado final desejado de forma clara e direta.",
+        "body": "Apresente 3 passos acionáveis, exibindo a tela ou anotações rápidas.",
+        "climax": "Explique a sacada que quase ninguém aplica.",
+        "cta": "Se você quer aprender mais estratégias como essa, clica no '+' e me segue!"
+      }
+    ],
+    "hashtags": ["#marketingdigital", "#financas", "#empreendedorismo", "#dinheiro", "#sucesso", "#rendaextra"]
+  },
+  "humor": {
+    "name": "Humor & Relatable (Identificação)",
+    "hooks": [
+      "Diga que você mora no Brasil sem dizer que mora no Brasil:",
+      "Todo mundo tem um amigo que é exatamente assim:",
+      "Eu jurava que só acontecia comigo, até descobrir que...",
+      "Pov: você tentando agir naturalmente quando...",
+      "A vida adulta é basicamente você descobrindo que..."
+    ],
+    "structures": [
+      {
+        "title": "Situação do Cotidiano (POV)",
+        "intro": "Coloque uma legenda no topo em caixa alta estabelecendo o contexto imediatamente.",
+        "body": "Desenvolva o clímax da cena com cortes rápidos e reações expressivas.",
+        "climax": "Corte no momento exato da reação mais engraçada.",
+        "cta": "Compartilha com aquele amigo que faz igual e me segue pra mais risadas!"
+      }
+    ],
+    "hashtags": ["#humor", "#comedia", "#engracado", "#pov", "#meme", "#foryoubrasil"]
+  },
+  "fitness": {
+    "name": "Fitness, Saúde & Treino",
+    "hooks": [
+      "O maior erro que está impedindo você de queimar gordura abdominal:",
+      "Coma isso antes de dormir se você quer acordar menos inchado:",
+      "Pare de fazer esse exercício assim se você não quer machucar sua coluna:",
+      "3 trocas inteligentes no seu prato que vão acelerar seu resultado pela metade do tempo:"
+    ],
+    "structures": [
+      {
+        "title": "Correção de Erro Comum",
+        "intro": "Mostre a forma 'errada' nos primeiros 2 segundos com um 'X' vermelho.",
+        "body": "Mostre a forma correta e o motivo fisiológico de forma simples.",
+        "climax": "Dê a dica de ouro para intensificar o resultado.",
+        "cta": "Salva esse vídeo para não errar no próximo treino e me segue para mais dicas!"
+      }
+    ],
+    "hashtags": ["#fitness", "#treino", "#emagrecimento", "#dieta", "#saude", "#academia", "#musculacao"]
+  },
+  "beleza": {
+    "name": "Beleza, Skincare & Moda",
+    "hooks": [
+      "O produto de farmácia que custa R$ 20 e faz o mesmo efeito que o de R$ 300:",
+      "Nunca mais passe corretivo assim se você não quer craquelar sua make:",
+      "O segredo para acordar com o cabelo impecável sem gastar quase nada:",
+      "3 truques de moda simples que fazem qualquer look parecer de luxo:"
+    ],
+    "structures": [
+      {
+        "title": "Transformação / Comparação",
+        "intro": "Metade do rosto ou look pronto vs. não pronto.",
+        "body": "Tutorial passo a passo ultra rápido (speed-up de 1.5x).",
+        "climax": "Resultado final cinematográfico com boa iluminação.",
+        "cta": "Já conhecia esse truque? Me segue para mais achadinhos e dicas de beleza!"
+      }
+    ],
+    "hashtags": ["#beleza", "#skincare", "#maquiagem", "#moda", "#lookdodia", "#dicasdebeleza"]
+  },
+  "gamer": {
+    "name": "Games & Tecnologia",
+    "hooks": [
+      "A configuração secreta que vai dobrar seu FPS e ninguém te contou:",
+      "O momento mais insano que já aconteceu no servidor:",
+      "Esse jogo novo acabou de lançar totalmente de graça e você precisa testar:",
+      "Como conseguir essa skin/item lendário sem gastar 1 centavo:"
+    ],
+    "structures": [
+      {
+        "title": "Highlight com Revelação",
+        "intro": "Comece pelo momento mais tenso da gameplay cortado no ápice.",
+        "body": "Explique rapidamente a tática ou truque usado.",
+        "climax": "Exiba a vitória ou resultado final satisfatório.",
+        "cta": "Quer mais dicas desse jogo? Clica no coração e me segue para lives diárias!"
+      }
+    ],
+    "hashtags": ["#games", "#gaming", "#gamerbr", "#dicasdegames", "#gameplay", "#tecnologia"]
+  }
+}

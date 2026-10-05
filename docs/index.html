@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Booster Pro - Acelerador de Seguidores e Engajamento</title>
+  <meta name="tiktok-developers-site-verification" content="NaFsFOUwzQ27qO1MC7wHTsR7FEDjym9w">
+  <meta name="tiktok-site-verification" content="NaFsFOUwzQ27qO1MC7wHTsR7FEDjym9w">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="logo-icon">
+          <i class="fa-brands fa-tiktok"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">TikTok <span class="neon-text">Booster Pro</span></span>
+          <span class="brand-badge">Viral Suite 2026</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div id="connectionStatusBadge" class="status-indicator">
+          <span class="dot pulse-dot"></span>
+          <span id="statusText">Verificando...</span>
+        </div>
+        <button id="openConfigModalBtn" class="btn btn-secondary">
+          <i class="fa-solid fa-key"></i> Configurar API
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Profile / Quick Stats Header Banner -->
+    <section class="profile-hero-card">
+      <div class="profile-main-info">
+        <div class="avatar-wrapper">
+          <img id="profileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80" alt="Avatar">
+          <span class="online-tag"><i class="fa-solid fa-bolt"></i></span>
+        </div>
+        <div class="profile-details">
+          <div class="name-row">
+            <h2 id="profileDisplayName">Criador TikTok Pro</h2>
+            <span id="profileUsername" class="handle">@meucanal_viral</span>
+            <span id="badgeSandbox" class="badge badge-warning">Modo Sandbox</span>
+          </div>
+          <p id="profileBio" class="bio-text">Criador de conteúdo focado em crescimento e estratégias virais 🚀</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label"><i class="fa-solid fa-users"></i> Seguidores</span>
+          <span id="statFollowers" class="stat-value neon-cyan">3,840</span>
+          <span class="stat-sub text-green"><i class="fa-solid fa-arrow-trend-up"></i> +14.2% esta semana</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label"><i class="fa-solid fa-heart"></i> Curtidas Totais</span>
+          <span id="statLikes" class="stat-value neon-pink">54.2K</span>
+          <span class="stat-sub">Vídeos com alta retenção</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label"><i class="fa-solid fa-chart-line"></i> Taxa de Engajamento</span>
+          <span id="statEngagement" class="stat-value neon-cyan">8.4%</span>
+          <span class="stat-sub text-green">Acima da média geral (5%)</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label"><i class="fa-solid fa-video"></i> Vídeos Postados</span>
+          <span id="statVideos" class="stat-value">28</span>
+          <span class="stat-sub">Consistência ativa</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <button id="connectTikTokBtn" class="btn btn-tiktok">
+          <i class="fa-brands fa-tiktok"></i> Conectar com TikTok Oficial
+        </button>
+        <button id="quickAuditBtn" class="btn btn-outline">
+          <i class="fa-solid fa-magnifying-glass-chart"></i> Fazer Auditoria Rápida
+        </button>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" data-tab="tab-generator">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> 1. Gerador de Roteiros & Ganchos Virais
+      </button>
+      <button class="tab-btn" data-tab="tab-schedule">
+        <i class="fa-solid fa-clock"></i> 2. Melhores Horários & Algoritmo
+      </button>
+      <button class="tab-btn" data-tab="tab-audit">
+        <i class="fa-solid fa-bullseye"></i> 3. Auditoria de Conversão de Perfil
+      </button>
+      <button class="tab-btn" data-tab="tab-network">
+        <i class="fa-solid fa-handshake"></i> 4. Rede de Co-Criação & Duetos
+      </button>
+    </nav>
+
+    <!-- TAB 1: Viral Generator -->
+    <section id="tab-generator" class="tab-panel active">
+      <div class="panel-header">
+        <div>
+          <h3>Gerador de Ganchos dos Primeiros 3 Segundos</h3>
+          <p class="subtitle">O segredo #1 para ganhar seguidores é prender a atenção antes do usuário passar o vídeo.</p>
+        </div>
+      </div>
+
+      <div class="generator-layout">
+        <!-- Controls Column -->
+        <div class="card form-card">
+          <form id="hookForm">
+            <div class="form-group">
+              <label for="nicheSelect"><i class="fa-solid fa-shapes"></i> Escolha o Nicho do Seu Canal</label>
+              <select id="nicheSelect" class="form-control">
+                <option value="curiosidades">Curiosidades & Fatos Incríveis</option>
+                <option value="negocios">Negócios, Finanças & Marketing</option>
+                <option value="humor">Humor & Situações Cotidianas (POV)</option>
+                <option value="fitness">Fitness, Saúde & Treino</option>
+                <option value="beleza">Beleza, Skincare & Moda</option>
+                <option value="gamer">Games & Tecnologia</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="topicInput"><i class="fa-solid fa-lightbulb"></i> Assunto Específico do Vídeo</label>
+              <input type="text" id="topicInput" class="form-control" placeholder="Ex: Como economizar dinheiro todo mês, Truque de maquiagem..." value="Como triplicar seu foco nos estudos">
+            </div>
+
+            <div class="form-group">
+              <label for="goalSelect"><i class="fa-solid fa-flag-checkered"></i> Objetivo Principal</label>
+              <select id="goalSelect" class="form-control">
+                <option value="followers">Ganhar Novos Seguidores (Foco em CTA)</option>
+                <option value="viral">Entregar para o For You (Máxima Retenção)</option>
+                <option value="shares">Gerar Compartilhamentos (Conteúdo Salvável)</option>
+              </select>
+            </div>
+
+            <button type="submit" id="generateBtn" class="btn btn-primary btn-block">
+              <i class="fa-solid fa-bolt"></i> Gerar Estrutura Viral Completa
+            </button>
+          </form>
+
+          <div class="preset-box">
+            <h4>💡 Dicas de ouro de retenção:</h4>
+            <ul>
+              <li>Nunca comece com "Oi galera, tudo bem?". Comece direto na ação!</li>
+              <li>Coloque uma legenda animada ou contraste na primeira frase.</li>
+              <li>A promessa do gancho deve ser entregue antes de 30 segundos.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Output Column -->
+        <div class="card result-card">
+          <div class="result-header">
+            <h4><i class="fa-solid fa-clipboard-check text-cyan"></i> Roteiro Otimizado Gerado</h4>
+            <button id="copyAllScriptBtn" class="btn btn-sm btn-outline">
+              <i class="fa-regular fa-copy"></i> Copiar Roteiro
+            </button>
+          </div>
+
+          <div id="scriptOutputArea" class="script-output">
+            <div class="step-card">
+              <div class="step-badge neon-pink">Etapa 1: Gancho Fatal (0s - 3s)</div>
+              <p id="hookPreview" class="step-text">"Quase ninguém sabe disso, mas se você tem menos de 25 anos, assista até o final antes que esse vídeo saia do ar..."</p>
+              <div class="action-buttons">
+                <button class="btn-chip" onclick="copyText('hookPreview')"><i class="fa-regular fa-copy"></i> Copiar Gancho</button>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-badge neon-cyan">Etapa 2: Retenção & Curiosidade (3s - 15s)</div>
+              <p id="retentionPreview" class="step-text">Apresente um fato contra-intuitivo nos primeiros instantes com cortes dinâmicos a cada 2.5 segundos.</p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-badge">Etapa 3: Entrega de Conteúdo (15s - 45s)</div>
+              <p id="deliveryPreview" class="step-text">Explique de forma prática 3 pontos rápidos sem enrolação com B-roll ou troca de ângulo de gravação.</p>
+            </div>
+
+            <div class="step-card">
+              <div class="step-badge neon-green">Etapa 4: CTA de Conversão de Seguidor (Últimos 5s)</div>
+              <p id="ctaPreview" class="step-text">"Se você quer dominar mais truques práticos como esse, clica no '+' do meu perfil para me seguir!"</p>
+            </div>
+
+            <div class="hashtags-container">
+              <div class="hashtags-label">
+                <span><i class="fa-solid fa-hashtag"></i> Hashtags Otimizadas para o Algoritmo:</span>
+                <button id="copyTagsBtn" class="btn-chip"><i class="fa-regular fa-copy"></i> Copiar Tags</button>
+              </div>
+              <div id="tagsList" class="tags-flex">
+                <span class="tag-pill">#foryou</span>
+                <span class="tag-pill">#viral</span>
+                <span class="tag-pill">#dicas</span>
+                <span class="tag-pill">#foco</span>
+                <span class="tag-pill">#produtividade</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Best Times & Algorithm -->
+    <section id="tab-schedule" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <h3>Matriz de Horários de Pico no TikTok (Brasil / América Latina)</h3>
+          <p class="subtitle">Postar no momento exato em que seu público está online garante a tração inicial necessária para o vídeo furar a bolha.</p>
+        </div>
+      </div>
+
+      <div class="schedule-grid">
+        <div class="card">
+          <h4><i class="fa-solid fa-calendar-day text-pink"></i> Melhores Janelas por Dia da Semana</h4>
+          <div class="days-selector" id="daysSelector">
+            <button class="day-btn" data-day="segunda">Seg</button>
+            <button class="day-btn" data-day="terca">Ter</button>
+            <button class="day-btn" data-day="quarta">Qua</button>
+            <button class="day-btn" data-day="quinta">Qui</button>
+            <button class="day-btn" data-day="sexta">Sex</button>
+            <button class="day-btn" data-day="sabado">Sáb</button>
+            <button class="day-btn active" data-day="domingo">Dom</button>
+          </div>
+
+          <div id="peakHoursList" class="peak-hours-list">
+            <!-- Dynamic slots populated by JS -->
+          </div>
+        </div>
+
+        <div class="card">
+          <h4><i class="fa-solid fa-brain text-cyan"></i> Os 4 Pilares do Algoritmo do TikTok</h4>
+          <div class="pillars-container" id="pillarsList">
+            <!-- Dynamic pillars populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Profile Audit & Follower Conversion -->
+    <section id="tab-audit" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <h3>Auditoria de Conversão de Perfil</h3>
+          <p class="subtitle">Descubra por que quem assiste aos seus vídeos ainda não clica no botão "Seguir" e como corrigir.</p>
+        </div>
+      </div>
+
+      <div class="audit-layout">
+        <div class="card form-card">
+          <form id="auditForm">
+            <div class="form-group">
+              <label for="auditUsername"><i class="fa-solid fa-at"></i> Seu @ no TikTok</label>
+              <input type="text" id="auditUsername" class="form-control" placeholder="@seuperfil" value="@meucanal_viral">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col">
+                <label for="auditFollowers">Seguidores Atuais</label>
+                <input type="number" id="auditFollowers" class="form-control" value="3840">
+              </div>
+              <div class="form-group col">
+                <label for="auditFollowing">Contas que Segue</label>
+                <input type="number" id="auditFollowing" class="form-control" value="210">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="auditViews">Média de Visualizações por Vídeo</label>
+              <input type="number" id="auditViews" class="form-control" value="1500" placeholder="Ex: 2000">
+            </div>
+
+            <div class="form-group">
+              <label for="auditFrequency">Frequência de Postagem</label>
+              <select id="auditFrequency" class="form-control">
+                <option value="daily_2_3">2 a 3 vídeos por dia (Ideal)</option>
+                <option value="daily_1" selected>1 vídeo por dia</option>
+                <option value="weekly_3_4">3 a 4 vídeos por semana</option>
+                <option value="irregular">Irregular (de vez em quando)</option>
+              </select>
+            </div>
+
+            <div class="checkbox-group">
+              <label class="custom-checkbox">
+                <input type="checkbox" id="checkBio" checked>
+                <span class="checkmark"></span>
+                Minha Bio explica em 1 linha o que eu ensino/faço
+              </label>
+
+              <label class="custom-checkbox">
+                <input type="checkbox" id="checkCta" checked>
+                <span class="checkmark"></span>
+                Tenho uma chamada para ação clara (CTA) ou link na Bio
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+              <i class="fa-solid fa-gauge-high"></i> Calcular Diagnóstico do Perfil
+            </button>
+          </form>
+        </div>
+
+        <div class="card result-card" id="auditResultCard">
+          <div class="audit-score-box">
+            <div class="score-circle-wrapper">
+              <div class="score-number" id="scoreDisplay">85</div>
+              <span class="score-total">/100</span>
+            </div>
+            <div class="score-details">
+              <h4 id="badgeDisplay" class="score-badge text-cyan">Potencial Máximo de Viralização</h4>
+              <p id="summaryDisplay" class="text-muted">Seu perfil está bem estruturado para converter espectadores ocasionais em seguidores fiéis.</p>
+            </div>
+          </div>
+
+          <div class="audit-breakdown">
+            <div class="breakdown-col">
+              <h5><i class="fa-solid fa-circle-check text-green"></i> Pontos Fortes</h5>
+              <ul id="strengthsList" class="checklist strengths">
+                <li>Sua Bio possui proposta de valor evidente.</li>
+                <li>Boa proporção entre seguidores e contas que segue.</li>
+              </ul>
+            </div>
+
+            <div class="breakdown-col">
+              <h5><i class="fa-solid fa-triangle-exclamation text-pink"></i> O que ajustar para dobrar seguidores</h5>
+              <ul id="recommendationsList" class="checklist fixes">
+                <li>Peça explicitamente para seguir no final do vídeo com um benefício claro.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Creator Collaboration Network -->
+    <section id="tab-network" class="tab-panel">
+      <div class="panel-header">
+        <div>
+          <h3>Rede de Co-Criação & Duetos</h3>
+          <p class="subtitle">A forma mais rápida e 100% orgânica de conseguir seguidores reais é fazer parcerias e duetos com outros criadores do seu nicho.</p>
+        </div>
+        <button id="joinNetworkBtn" class="btn btn-secondary">
+          <i class="fa-solid fa-user-plus"></i> Divulgar Meu Perfil Aqui
+        </button>
+      </div>
+
+      <div class="creators-grid" id="creatorsGrid">
+        <!-- Dynamic creator cards -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal: Configuração da API do TikTok -->
+  <div id="configModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-sliders text-pink"></i> Configurar API TikTok for Developers</h3>
+        <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Para conectar sua conta real e dados automáticos, você pode inserir as credenciais obtidas no portal oficial 
+          <a href="https://developers.tiktok.com/" target="_blank" rel="noopener">TikTok for Developers</a>:
+        </p>
+
+        <form id="settingsForm">
+          <div class="form-group">
+            <label for="cfgClientKey">Client Key (Chave do Cliente)</label>
+            <input type="text" id="cfgClientKey" class="form-control" placeholder="Insira seu Client Key">
+          </div>
+
+          <div class="form-group">
+            <label for="cfgClientSecret">Client Secret (Segredo)</label>
+            <input type="password" id="cfgClientSecret" class="form-control" placeholder="Insira seu Client Secret">
+          </div>
+
+          <div class="form-group">
+            <label for="cfgRedirectUri">URI de Redirecionamento (Redirect URI)</label>
+            <input type="text" id="cfgRedirectUri" class="form-control" value="http://localhost:3000/auth/tiktok/callback">
+            <small class="helper-text">Adicione exatamente esta URL nas configurações do seu app no TikTok Developer Portal.</small>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar Credenciais</button>
+            <button type="button" class="btn btn-outline" id="cancelModalBtn">Fechar</button>
+          </div>
+        </form>
+
+        <div class="instructions-box">
+          <h5>Como obter suas chaves oficiais:</h5>
+          <ol>
+            <li>Acesse <a href="https://developers.tiktok.com/" target="_blank">developers.tiktok.com</a> e faça login.</li>
+            <li>Crie um novo App e adicione o <strong>Login Kit</strong> e o <strong>Display API</strong>.</li>
+            <li>Copie o <code>Client Key</code> e o <code>Client Secret</code> e cole nos campos acima.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Divulgar Perfil na Rede -->
+  <div id="joinModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-handshake text-cyan"></i> Entrar na Rede de Co-Criação</h3>
+        <button class="close-modal-btn" id="closeJoinModalBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="joinNetworkForm">
+          <div class="form-group">
+            <label for="joinName">Seu Nome ou Canal</label>
+            <input type="text" id="joinName" class="form-control" required placeholder="Ex: Lucas Dicas">
+          </div>
+
+          <div class="form-group">
+            <label for="joinHandle">Seu @ do TikTok</label>
+            <input type="text" id="joinHandle" class="form-control" required placeholder="@seucanal">
+          </div>
+
+          <div class="form-group">
+            <label for="joinNiche">Nicho de Conteúdo</label>
+            <select id="joinNiche" class="form-control">
+              <option value="curiosidades">Curiosidades</option>
+              <option value="negocios">Negócios & Finanças</option>
+              <option value="humor">Humor & Entretenimento</option>
+              <option value="fitness">Fitness & Saúde</option>
+              <option value="beleza">Beleza & Moda</option>
+              <option value="gamer">Games & Tech</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="joinAvailable">Disponível para:</label>
+            <input type="text" id="joinAvailable" class="form-control" placeholder="Ex: Duetos, Costuras (Stitch), Lives conjuntas">
+          </div>
+
+          <div class="form-group">
+            <label for="joinBio">Breve descrição do seu canal:</label>
+            <textarea id="joinBio" class="form-control" rows="3" placeholder="Fale um pouco sobre o conteúdo que você cria e o que busca em parcerias..."></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Publicar Perfil na Rede</button>
+            <button type="button" class="btn btn-outline" id="cancelJoinModalBtn">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastMessage" class="toast">Mensagem de alerta</div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
