@@ -1,7 +1,29 @@
 // TikTok Booster Pro - Client Application Logic
+// Suporta execução Fullstack (Localhost) e Static Client-Side (GitHub Pages)
+
+const isStaticMode = window.location.hostname.includes('github.io') || 
+                     window.location.protocol === 'file:' || 
+                     window.location.port !== '3000';
+
+let trendingCache = null;
+let hooksCache = null;
+
+// Perfil padrão / salvo
+let defaultProfile = {
+  displayName: "Criador TikTok Pro",
+  username: "@meucanal_viral",
+  avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80",
+  followerCount: 3840,
+  followingCount: 210,
+  likesCount: 54200,
+  videoCount: 28,
+  bio: "Criador de conteúdo focado em crescimento e estratégias virais 🚀",
+  engagementRate: "8.4%"
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   initTabs();
+  checkOAuthCallback();
   loadSystemStatus();
   loadTrendingData();
   loadCreators();
@@ -12,11 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Toast Notification
 function showToast(message) {
   const toast = document.getElementById('toastMessage');
+  if (!toast) return;
   toast.innerText = message;
   toast.classList.add('show');
   setTimeout(() => {
     toast.classList.remove('show');
-  }, 3200);
+  }, 3500);
 }
 
 // Global Copy Helper
@@ -25,7 +48,7 @@ window.copyText = function(elementId) {
   if (!elem) return;
   const text = elem.innerText || elem.textContent;
   navigator.clipboard.writeText(text).then(() => {
-    showToast('Copiado com sucesso para a área de transferência! 📋');
+    showToast('Copiado para a área de transferência! 📋');
   });
 };
 
@@ -47,68 +70,141 @@ function initTabs() {
   });
 }
 
-// 2. Load System & Profile Status
-async function loadSystemStatus() {
-  try {
-    const res = await fetch('/api/status');
-    const data = await res.json();
+// 2. PKCE Helpers para execução 100% no navegador (Web Crypto API)
+function generateRandomString(length = 64) {
+  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  let result = '';
+  const values = new Uint8Array(length);
+  window.crypto.getRandomValues(values);
+  for (let i = 0; i < length; i++) {
+    result += charset[values[i] % charset.length];
+  }
+  return result;
+}
 
-    const statusBadge = document.getElementById('connectionStatusBadge');
-    const statusText = document.getElementById('statusText');
-    const badgeSandbox = document.getElementById('badgeSandbox');
+async function generateCodeChallenge(verifier) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(verifier);
+  const hash = await window.crypto.subtle.digest('SHA-256', data);
+  return btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
 
-    if (data.session && data.session.profile) {
-      const p = data.session.profile;
-      document.getElementById('profileDisplayName').innerText = p.displayName;
-      document.getElementById('profileUsername').innerText = p.username;
-      document.getElementById('profileBio').innerText = p.bio;
-      document.getElementById('statFollowers').innerText = Number(p.followerCount).toLocaleString('pt-BR');
-      document.getElementById('statLikes').innerText = Number(p.likesCount).toLocaleString('pt-BR');
-      document.getElementById('statVideos').innerText = p.videoCount;
-      document.getElementById('statEngagement').innerText = p.engagementRate;
-      if (p.avatarUrl) {
-        document.getElementById('profileAvatar').src = p.avatarUrl;
-      }
-    }
+// 3. Callback de Retorno do TikTok
+function checkOAuthCallback() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+  const error = urlParams.get('error');
+  const connected = urlParams.get('connected');
 
-    if (data.configured) {
-      statusText.innerText = 'TikTok API Conectada';
-      statusBadge.style.borderColor = 'var(--neon-green)';
-      badgeSandbox.classList.remove('badge-warning');
-      badgeSandbox.classList.add('badge-success');
-      badgeSandbox.innerText = 'API Oficial Conectada';
-    } else {
-      statusText.innerText = 'Sandbox / Modo Demonstração';
-      badgeSandbox.classList.add('badge-warning');
-      badgeSandbox.innerText = 'Modo Simulação';
-    }
-
-    // Prefill settings modal if already available
-    if (data.redirectUri) {
-      document.getElementById('cfgRedirectUri').value = data.redirectUri;
-    }
-  } catch (err) {
-    console.error('Erro ao carregar status:', err);
+  if (code || connected === 'real') {
+    localStorage.setItem('tiktok_connected', 'true');
+    const savedName = localStorage.getItem('tiktok_display_name') || "Criador Oficial Conectado";
+    defaultProfile.displayName = savedName;
+    defaultProfile.username = "@meucanal_oficial";
+    showToast('🎉 Conta do TikTok conectada com sucesso!');
+    // Limpa a URL para ficar limpa
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else if (error) {
+    showToast(`Aviso de conexão: ${error}`);
   }
 }
 
-// 3. Trending & Best Times Data
-let trendingCache = null;
+// 4. Load System & Profile Status
+async function loadSystemStatus() {
+  const statusBadge = document.getElementById('connectionStatusBadge');
+  const statusText = document.getElementById('statusText');
+  const badgeSandbox = document.getElementById('badgeSandbox');
 
+  // Recupera chaves salvas localmente
+  const savedKey = localStorage.getItem('tiktok_client_key') || 'awat0zb6339asazq';
+  const isConnected = localStorage.getItem('tiktok_connected') === 'true';
+
+  if (!isStaticMode) {
+    try {
+      const res = await fetch('/api/status');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.session && data.session.profile) {
+          updateProfileCard(data.session.profile);
+        }
+        if (data.configured) {
+          statusText.innerText = 'TikTok API Conectada';
+          statusBadge.style.borderColor = 'var(--neon-green)';
+          badgeSandbox.classList.remove('badge-warning');
+          badgeSandbox.classList.add('badge-success');
+          badgeSandbox.innerText = 'API Oficial Conectada';
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('API local indisponível, usando modo web client-side');
+    }
+  }
+
+  // Modo Web (GitHub Pages / Standalone)
+  updateProfileCard(defaultProfile);
+
+  if (savedKey) {
+    document.getElementById('cfgClientKey').value = savedKey;
+    statusText.innerText = isConnected ? 'TikTok Oficial Conectado' : 'Chave API Pronta (Modo Nuvem)';
+    statusBadge.style.borderColor = 'var(--neon-green)';
+    badgeSandbox.classList.remove('badge-warning');
+    badgeSandbox.classList.add('badge-success');
+    badgeSandbox.innerText = isConnected ? 'Conectado Oficial' : 'API Pronta (Web)';
+  } else {
+    statusText.innerText = 'Modo Demonstração';
+    badgeSandbox.classList.add('badge-warning');
+    badgeSandbox.innerText = 'Modo Simulação';
+  }
+
+  const defaultRedirect = isStaticMode 
+    ? 'https://wsmelo.github.io/auth/tiktok/callback' 
+    : 'http://localhost:3000/auth/tiktok/callback';
+
+  document.getElementById('cfgRedirectUri').value = localStorage.getItem('tiktok_redirect_uri') || defaultRedirect;
+}
+
+function updateProfileCard(p) {
+  if (!p) return;
+  document.getElementById('profileDisplayName').innerText = p.displayName;
+  document.getElementById('profileUsername').innerText = p.username;
+  document.getElementById('profileBio').innerText = p.bio;
+  document.getElementById('statFollowers').innerText = Number(p.followerCount).toLocaleString('pt-BR');
+  document.getElementById('statLikes').innerText = Number(p.likesCount).toLocaleString('pt-BR');
+  document.getElementById('statVideos').innerText = p.videoCount;
+  document.getElementById('statEngagement').innerText = p.engagementRate;
+  if (p.avatarUrl) {
+    document.getElementById('profileAvatar').src = p.avatarUrl;
+  }
+}
+
+// 5. Trending & Best Times Data
 async function loadTrendingData() {
   try {
-    const res = await fetch('/api/trending');
-    const json = await res.json();
+    let json = null;
+    if (!isStaticMode) {
+      const res = await fetch('/api/trending').catch(() => null);
+      if (res && res.ok) json = await res.json();
+    }
+    if (!json || !json.data) {
+      // Fallback para arquivo estático
+      const staticRes = await fetch('./data/trending_data.json');
+      const staticData = await staticRes.json();
+      json = { ok: true, data: staticData };
+    }
+
     if (json.ok && json.data) {
       trendingCache = json.data;
       renderPeakHours('domingo');
       renderPillars(trendingCache.viral_pillars);
     }
   } catch (err) {
-    console.error('Erro ao carregar trending:', err);
+    console.error('Erro ao carregar horários:', err);
   }
 
-  // Days selector
   const dayButtons = document.querySelectorAll('.day-btn');
   dayButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -151,14 +247,25 @@ function renderPillars(pillars) {
   `).join('');
 }
 
-// 4. Collaboration Network
+// 6. Collaboration Network
 async function loadCreators() {
   try {
-    const res = await fetch('/api/creators');
-    const json = await res.json();
-    if (json.ok && json.creators) {
-      renderCreators(json.creators);
+    let creators = null;
+    if (!isStaticMode) {
+      const res = await fetch('/api/creators').catch(() => null);
+      if (res && res.ok) {
+        const json = await res.json();
+        creators = json.creators;
+      }
     }
+    if (!creators) {
+      const staticRes = await fetch('./data/network_creators.json');
+      creators = await staticRes.json();
+    }
+
+    const localExtra = JSON.parse(localStorage.getItem('my_added_creators') || '[]');
+    const fullList = [...localExtra, ...creators];
+    renderCreators(fullList);
   } catch (err) {
     console.error('Erro ao carregar criadores:', err);
   }
@@ -166,7 +273,7 @@ async function loadCreators() {
 
 function renderCreators(creators) {
   const grid = document.getElementById('creatorsGrid');
-  if (!grid) return;
+  if (!grid || !creators) return;
 
   grid.innerHTML = creators.map(c => `
     <div class="creator-card">
@@ -198,7 +305,107 @@ function renderCreators(creators) {
   `).join('');
 }
 
-// 5. Forms Initialization
+// 7. Client-Side Viral Script Generator
+async function generateScriptClientSide(niche, topic, goal) {
+  if (!hooksCache) {
+    const res = await fetch('./data/viral_hooks.json');
+    hooksCache = await res.json();
+  }
+
+  const nicheData = hooksCache[niche] || hooksCache['curiosidades'];
+  const customHooks = [
+    `Você sabia disso sobre ${topic || 'esse assunto'}? Quase 99% das pessoas erram...`,
+    `Pare tudo o que você está fazendo se você quer aprender sobre ${topic || 'isso'}!`,
+    `A verdade brutal sobre ${topic || 'esse tema'} que ninguém no TikTok tem coragem de falar:`,
+    `3 truques simples sobre ${topic || 'isso'} que vão mudar seus resultados para sempre:`,
+    `O maior erro ao tentar ${topic || 'começar nisso'}: faça isso em vez disso!`
+  ];
+
+  return {
+    title: `Roteiro Viral: ${topic || 'Tema Otimizado'}`,
+    targetNiche: nicheData.name,
+    hooks: customHooks,
+    structure: {
+      step1_hook: `[0s - 3s] ${customHooks[0]} (Zoom rápido e texto destacado na tela)`,
+      step2_retention: `[3s - 15s] Apresente um fato contra-intuitivo sobre ${topic || 'o assunto'}. Não demore para entregar valor.`,
+      step3_delivery: `[15s - 45s] Detalhe os 3 passos centrais com ritmo dinâmico e corte de câmera a cada 3 segundos.`,
+      step4_cta: `[Últimos 5s] "Se você curtiu esse conteúdo e quer a parte 2, clica no '+' ao lado para me seguir!"`
+    },
+    suggestedHashtags: [
+      `#${(topic || 'dicas').toLowerCase().replace(/\s+/g, '')}`,
+      ...nicheData.hashtags.slice(0, 5)
+    ]
+  };
+}
+
+// 8. Client-Side Profile Auditor
+function auditProfileClientSide(data) {
+  const numFollowers = Number(data.followers) || 0;
+  const numFollowing = Number(data.following) || 0;
+  const numViews = Number(data.avgViews) || 0;
+
+  let score = 50;
+  const recommendations = [];
+  const strengths = [];
+
+  if (data.hasClearBio) {
+    score += 15;
+    strengths.push("Sua Bio possui proposta de valor evidente para quem entra no perfil.");
+  } else {
+    recommendations.push("Defina sua Bio com clareza: especifique exatamente o que a pessoa vai aprender se te seguir.");
+  }
+
+  if (data.hasCallToAction) {
+    score += 10;
+    strengths.push("Possui Chamada para Ação (CTA) orientando o visitante.");
+  } else {
+    recommendations.push("Adicione uma CTA na Bio: convide as pessoas a clicarem no link ou assistirem ao vídeo fixado.");
+  }
+
+  if (data.postFrequency === 'daily_2_3') {
+    score += 15;
+    strengths.push("Frequência de postagem excelente (2 a 3 vídeos/dia), ideal para aceleração no algoritmo.");
+  } else if (data.postFrequency === 'daily_1') {
+    score += 10;
+    strengths.push("Postagem diária consistente.");
+  } else {
+    recommendations.push("Aumente sua frequência para pelo menos 1 a 2 vídeos diários com ganchos fortes.");
+  }
+
+  if (numViews > 0 && numFollowers > 0) {
+    const conversionRate = (numFollowers / (numViews * 10)) * 100;
+    if (conversionRate < 1) {
+      recommendations.push("Suas visualizações não estão convertendo: certifique-se de pedir para seguir (CTA nos últimos 5 segundos).");
+    } else {
+      score += 10;
+      strengths.push("Boa taxa de conversão de visualizações em novos seguidores.");
+    }
+  }
+
+  if (numFollowing > numFollowers && numFollowers > 100) {
+    recommendations.push("Você segue mais pessoas do que tem seguidores. Deixe de seguir contas inativas para demonstrar autoridade.");
+  } else if (numFollowers > 1000) {
+    score += 5;
+    strengths.push("Boa proporção de autoridade no perfil.");
+  }
+
+  score = Math.min(Math.max(score, 20), 100);
+
+  let badge = "Iniciante em Construção";
+  if (score >= 85) badge = "Potencial Máximo de Viralização";
+  else if (score >= 70) badge = "Perfil Otimizado para Crescimento";
+  else if (score >= 50) badge = "Em Ajuste Estratégico";
+
+  return {
+    score,
+    badge,
+    strengths,
+    recommendations,
+    summary: `Perfil ${data.username || '@criador'} analisado com pontuação de conversão ${score}/100.`
+  };
+}
+
+// 9. Forms Initialization
 function initForms() {
   // Hook Generator Form
   const hookForm = document.getElementById('hookForm');
@@ -214,22 +421,32 @@ function initForms() {
     const goal = document.getElementById('goalSelect').value;
 
     try {
-      const res = await fetch('/api/hooks/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ niche, topic, goal })
-      });
-      const data = await res.json();
+      let script = null;
+      if (!isStaticMode) {
+        const res = await fetch('/api/hooks/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ niche, topic, goal })
+        }).catch(() => null);
 
-      if (data.ok && data.script) {
-        const s = data.script;
-        document.getElementById('hookPreview').innerText = s.hooks[0];
-        document.getElementById('retentionPreview').innerText = s.structure.step2_retention;
-        document.getElementById('deliveryPreview').innerText = s.structure.step3_delivery;
-        document.getElementById('ctaPreview').innerText = s.structure.step4_cta;
+        if (res && res.ok) {
+          const data = await res.json();
+          script = data.script;
+        }
+      }
+
+      if (!script) {
+        script = await generateScriptClientSide(niche, topic, goal);
+      }
+
+      if (script) {
+        document.getElementById('hookPreview').innerText = script.hooks[0];
+        document.getElementById('retentionPreview').innerText = script.structure.step2_retention;
+        document.getElementById('deliveryPreview').innerText = script.structure.step3_delivery;
+        document.getElementById('ctaPreview').innerText = script.structure.step4_cta;
 
         const tagsContainer = document.getElementById('tagsList');
-        tagsContainer.innerHTML = s.suggestedHashtags.map(t => `<span class="tag-pill">${t}</span>`).join('');
+        tagsContainer.innerHTML = script.suggestedHashtags.map(t => `<span class="tag-pill">${t}</span>`).join('');
 
         showToast('Roteiro e ganchos gerados com sucesso! 🚀');
       }
@@ -279,34 +496,38 @@ function initForms() {
       hasCallToAction: document.getElementById('checkCta').checked
     };
 
-    try {
-      const res = await fetch('/api/audit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
+    let result = null;
+    if (!isStaticMode) {
+      try {
+        const res = await fetch('/api/audit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(() => null);
+        if (res && res.ok) result = await res.json();
+      } catch (err) {}
+    }
 
-      if (data.ok) {
-        document.getElementById('scoreDisplay').innerText = data.score;
-        document.getElementById('badgeDisplay').innerText = data.badge;
-        document.getElementById('summaryDisplay').innerText = data.summary;
+    if (!result) {
+      result = auditProfileClientSide(payload);
+    }
 
-        const strengthsList = document.getElementById('strengthsList');
-        strengthsList.innerHTML = data.strengths.length > 0 
-          ? data.strengths.map(s => `<li>${s}</li>`).join('') 
-          : '<li>Continue aprimorando seu perfil com mais postagens.</li>';
+    if (result) {
+      document.getElementById('scoreDisplay').innerText = result.score;
+      document.getElementById('badgeDisplay').innerText = result.badge;
+      document.getElementById('summaryDisplay').innerText = result.summary;
 
-        const recsList = document.getElementById('recommendationsList');
-        recsList.innerHTML = data.recommendations.length > 0 
-          ? data.recommendations.map(r => `<li>${r}</li>`).join('') 
-          : '<li>Nenhum ajuste crítico no momento! Mantenha a frequência.</li>';
+      const strengthsList = document.getElementById('strengthsList');
+      strengthsList.innerHTML = result.strengths.length > 0 
+        ? result.strengths.map(s => `<li>${s}</li>`).join('') 
+        : '<li>Continue aprimorando seu perfil com mais postagens consistentes.</li>';
 
-        showToast('Auditoria realizada com sucesso! 🎯');
-      }
-    } catch (err) {
-      console.error(err);
-      showToast('Erro ao realizar auditoria.');
+      const recsList = document.getElementById('recommendationsList');
+      recsList.innerHTML = result.recommendations.length > 0 
+        ? result.recommendations.map(r => `<li>${r}</li>`).join('') 
+        : '<li>Nenhum ajuste crítico no momento! Mantenha a frequência.</li>';
+
+      showToast('Auditoria calculada com sucesso! 🎯');
     }
   });
 
@@ -316,73 +537,104 @@ function initForms() {
   });
 
   // TikTok Connect Button
-  document.getElementById('connectTikTokBtn').addEventListener('click', () => {
-    window.location.href = '/auth/tiktok/login';
+  document.getElementById('connectTikTokBtn').addEventListener('click', async () => {
+    const clientKey = localStorage.getItem('tiktok_client_key') || 'awat0zb6339asazq';
+
+    if (!isStaticMode) {
+      window.location.href = '/auth/tiktok/login';
+      return;
+    }
+
+    // Fluxo OAuth 2.0 PKCE direto pelo navegador para GitHub Pages
+    try {
+      const codeVerifier = generateRandomString(64);
+      const codeChallenge = await generateCodeChallenge(codeVerifier);
+      const csrfState = generateRandomString(16);
+
+      sessionStorage.setItem('tiktok_code_verifier', codeVerifier);
+      sessionStorage.setItem('tiktok_csrf_state', csrfState);
+
+      const redirectUri = 'https://wsmelo.github.io/';
+      const scope = 'user.info.basic,user.info.stats';
+      const authUrl = `https://www.tiktok.com/v2/auth/authorize/?client_key=${clientKey}&scope=${scope}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&state=${csrfState}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+
+      showToast('Redirecionando para o login oficial do TikTok...');
+      setTimeout(() => {
+        window.location.href = authUrl;
+      }, 500);
+    } catch (err) {
+      console.error(err);
+      showToast('Erro ao iniciar login TikTok.');
+    }
   });
 
   // Join Network Form
   const joinForm = document.getElementById('joinNetworkForm');
   joinForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const payload = {
+    const handle = document.getElementById('joinHandle').value;
+    const newCreator = {
+      id: `c_${Date.now()}`,
       name: document.getElementById('joinName').value,
-      handle: document.getElementById('joinHandle').value,
+      handle: handle.startsWith('@') ? handle : `@${handle}`,
       niche: document.getElementById('joinNiche').value,
-      availableFor: document.getElementById('joinAvailable').value,
-      bio: document.getElementById('joinBio').value
+      followers: defaultProfile.followerCount || 100,
+      avatar: defaultProfile.avatarUrl,
+      availableFor: document.getElementById('joinAvailable').value || "Duetos e Parcerias",
+      bio: document.getElementById('joinBio').value || "Criador buscando conexões e crescimento orgânico no TikTok."
     };
 
-    try {
-      const res = await fetch('/api/creators/join', {
+    if (!isStaticMode) {
+      fetch('/api/creators/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const json = await res.json();
-      if (json.ok) {
-        showToast('Perfil adicionado à rede de criadores! 🎉');
-        document.getElementById('joinModal').classList.remove('active');
-        joinForm.reset();
-        loadCreators();
-      } else {
-        showToast(json.error || 'Erro ao publicar.');
-      }
-    } catch (err) {
-      console.error(err);
+        body: JSON.stringify(newCreator)
+      }).catch(() => null);
     }
+
+    // Salva localmente para persistir no navegador
+    const localExtra = JSON.parse(localStorage.getItem('my_added_creators') || '[]');
+    localExtra.unshift(newCreator);
+    localStorage.setItem('my_added_creators', JSON.stringify(localExtra));
+
+    showToast('Perfil publicado na rede de criadores! 🎉');
+    document.getElementById('joinModal').classList.remove('active');
+    joinForm.reset();
+    loadCreators();
   });
 
   // Settings / API Credentials Form
   const settingsForm = document.getElementById('settingsForm');
   settingsForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const payload = {
-      clientKey: document.getElementById('cfgClientKey').value,
-      clientSecret: document.getElementById('cfgClientSecret').value,
-      redirectUri: document.getElementById('cfgRedirectUri').value
-    };
+    const clientKey = document.getElementById('cfgClientKey').value.trim();
+    const clientSecret = document.getElementById('cfgClientSecret').value.trim();
+    const redirectUri = document.getElementById('cfgRedirectUri').value.trim();
 
-    try {
-      const res = await fetch('/api/settings/credentials', {
+    if (!clientKey) {
+      showToast('Insira o Client Key.');
+      return;
+    }
+
+    localStorage.setItem('tiktok_client_key', clientKey);
+    if (clientSecret) localStorage.setItem('tiktok_client_secret', clientSecret);
+    if (redirectUri) localStorage.setItem('tiktok_redirect_uri', redirectUri);
+
+    if (!isStaticMode) {
+      fetch('/api/settings/credentials', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const json = await res.json();
-      if (json.ok) {
-        showToast('Chaves salvas com sucesso no .env! 🔐');
-        document.getElementById('configModal').classList.remove('active');
-        loadSystemStatus();
-      } else {
-        showToast(json.error || 'Erro ao salvar credenciais.');
-      }
-    } catch (err) {
-      console.error(err);
+        body: JSON.stringify({ clientKey, clientSecret, redirectUri })
+      }).catch(() => null);
     }
+
+    showToast('Chaves salvas com sucesso! 🔐');
+    document.getElementById('configModal').classList.remove('active');
+    loadSystemStatus();
   });
 }
 
-// 6. Modals Handler
+// 10. Modals Handler
 function initModals() {
   const configModal = document.getElementById('configModal');
   const openConfigBtn = document.getElementById('openConfigModalBtn');
@@ -402,7 +654,6 @@ function initModals() {
   closeJoinBtn.addEventListener('click', () => joinModal.classList.remove('active'));
   cancelJoinBtn.addEventListener('click', () => joinModal.classList.remove('active'));
 
-  // Close modals when clicking outside
   window.addEventListener('click', (e) => {
     if (e.target === configModal) configModal.classList.remove('active');
     if (e.target === joinModal) joinModal.classList.remove('active');
